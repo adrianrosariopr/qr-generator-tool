@@ -4,6 +4,8 @@ const qrContainer = document.getElementById('qr-container');
 const qrCode = document.getElementById('qr-code');
 const downloadBtn = document.getElementById('download-btn');
 
+let qrInstance = null;
+
 function generateQR() {
     const text = textInput.value.trim();
     
@@ -18,21 +20,16 @@ function generateQR() {
     qrCode.innerHTML = '';
     
     // Generate new QR code
-    QRCode.toCanvas(text, {
+    qrInstance = new QRCode(qrCode, {
+        text: text,
         width: 250,
-        margin: 2,
-        color: {
-            dark: '#333333',
-            light: '#ffffff'
-        }
-    }, (error, canvas) => {
-        if (error) {
-            console.error(error);
-            return;
-        }
-        qrCode.appendChild(canvas);
-        qrContainer.classList.remove('hidden');
+        height: 250,
+        colorDark: '#333333',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
     });
+    
+    qrContainer.classList.remove('hidden');
 }
 
 // Generate on button click
@@ -48,10 +45,25 @@ textInput.addEventListener('keypress', (e) => {
 // Download QR code
 downloadBtn.addEventListener('click', () => {
     const canvas = qrCode.querySelector('canvas');
-    if (!canvas) return;
+    const img = qrCode.querySelector('img');
+    
+    let dataUrl;
+    if (canvas) {
+        dataUrl = canvas.toDataURL('image/png');
+    } else if (img) {
+        // Fallback: create canvas from image
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        const ctx = tempCanvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        dataUrl = tempCanvas.toDataURL('image/png');
+    } else {
+        return;
+    }
     
     const link = document.createElement('a');
     link.download = 'qrcode.png';
-    link.href = canvas.toDataURL('image/png');
+    link.href = dataUrl;
     link.click();
 });
