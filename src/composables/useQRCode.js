@@ -8,7 +8,7 @@ export function useQRCode() {
   const isGenerating = ref(false)
 
   async function generateQR(data, options = {}) {
-    if (!data || data.trim() === '') {
+    if (!data?.trim()) {
       qrDataUrl.value = ''
       qrSvg.value = ''
       return

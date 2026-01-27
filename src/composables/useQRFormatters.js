@@ -38,9 +38,7 @@ export function formatEmail(data) {
   if (subject) params.push(`subject=${encodeURIComponent(subject)}`)
   if (body) params.push(`body=${encodeURIComponent(body)}`)
 
-  return params.length > 0
-    ? `mailto:${to}?${params.join('&')}`
-    : `mailto:${to}`
+  return `mailto:${to}${params.length ? '?' + params.join('&') : ''}`
 }
 
 /**
@@ -102,9 +100,7 @@ export function formatBitcoin(data) {
   if (label) params.push(`label=${encodeURIComponent(label)}`)
   if (message) params.push(`message=${encodeURIComponent(message)}`)
 
-  return params.length > 0
-    ? `bitcoin:${address}?${params.join('&')}`
-    : `bitcoin:${address}`
+  return `bitcoin:${address}${params.length ? '?' + params.join('&') : ''}`
 }
 
 /**

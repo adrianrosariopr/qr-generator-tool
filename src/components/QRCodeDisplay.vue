@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
+import gsap from 'gsap'
 
 const props = defineProps({
   dataUrl: String,
@@ -11,47 +12,79 @@ const props = defineProps({
   sizeOptions: Array
 })
 
-const emit = defineEmits(['downloadPng', 'downloadSvg', 'update:size', 'update:fgColor', 'update:bgColor'])
+const emit = defineEmits(['downloadPng', 'downloadSvg', 'update:size', 'update:fgColor', 'update:bgColor', 'showHelp'])
 
-const hasQRCode = computed(() => props.dataUrl && props.dataUrl.length > 0)
+const hasQRCode = computed(() => !!props.dataUrl)
+
+const cardRef = ref(null)
+const qrImageRef = ref(null)
+
+onMounted(() => {
+  if (cardRef.value) {
+    gsap.fromTo(cardRef.value,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, delay: 0.25, ease: 'power2.out' }
+    )
+  }
+})
+
+watch(() => props.dataUrl, (newVal, oldVal) => {
+  if (newVal && newVal !== oldVal && qrImageRef.value) {
+    gsap.fromTo(qrImageRef.value,
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.35, ease: 'power2.out' }
+    )
+  }
+})
 </script>
 
 <template>
-  <div class="card-brutal sticky top-6">
-    <div class="card-brutal-header">
-      <span class="dot dot-red"></span>
-      <span class="dot dot-blue"></span>
-      <span class="dot dot-green"></span>
+  <div ref="cardRef" class="card-cipher has-marquee h-full flex flex-col">
+    <div class="danger-marquee" aria-hidden="true"></div>
+    <div class="card-cipher-header justify-between">
+      <div class="flex items-center gap-2">
+        <span class="indicator"></span>
+        <span class="title">Output Module</span>
+      </div>
+      <button
+        @click="emit('showHelp')"
+        class="help-btn-cipher"
+        aria-label="How it works"
+        title="How it works"
+      >
+        ?
+      </button>
     </div>
-    <div class="card-brutal-body">
+    <div class="card-cipher-body flex-1 flex flex-col">
       <!-- QR Code Preview -->
-      <div class="border-3 border-dashed border-maroon rounded-lg p-6 mb-5 flex items-center justify-center min-h-[240px] bg-gray-50">
+      <div class="qr-preview-area p-6 mb-5 flex items-center justify-center min-h-[240px]">
         <div v-if="isGenerating" class="flex flex-col items-center gap-3">
-          <div class="w-10 h-10 border-4 border-btn-blue border-t-transparent rounded-full animate-spin"></div>
-          <span class="font-body text-sm text-maroon-light">Generating...</span>
+          <div class="loader-cipher"></div>
+          <span class="font-display text-xs text-gold uppercase tracking-widest">Generating...</span>
         </div>
 
         <div v-else-if="error" class="text-center">
-          <div class="w-14 h-14 bg-btn-red/20 border-3 border-btn-red rounded-lg flex items-center justify-center mx-auto mb-3">
-            <i class="fa-solid fa-circle-exclamation text-2xl text-btn-red"></i>
+          <div class="w-14 h-14 border border-red-500 flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-triangle-exclamation text-2xl text-red-500"></i>
           </div>
-          <p class="font-body text-sm text-btn-red">{{ error }}</p>
+          <p class="font-body text-xs text-red-500">{{ error }}</p>
         </div>
 
-        <div v-else-if="hasQRCode" class="relative animate-pop-in">
+        <div v-else-if="hasQRCode" class="relative">
           <img
+            ref="qrImageRef"
             :src="dataUrl"
             alt="Generated QR Code"
-            class="w-52 h-52 border-3 border-maroon rounded-lg"
+            class="w-52 h-52 border border-gold"
           />
         </div>
 
         <div v-else class="text-center py-4">
-          <div class="w-16 h-16 bg-gray-200 rounded-lg border-3 border-gray-300 flex items-center justify-center mx-auto mb-3">
-            <i class="fa-solid fa-qrcode text-3xl text-gray-400"></i>
+          <div class="w-16 h-16 border border-cyber-border flex items-center justify-center mx-auto mb-3">
+            <i class="fa-solid fa-qrcode text-3xl text-text-muted"></i>
           </div>
-          <p class="font-inter text-sm font-bold text-maroon-light">
-            Enter text to generate<br/>your QR code
+          <p class="font-display text-xs text-text-muted uppercase tracking-widest">
+            Enter data to generate<br/>your QR code
           </p>
         </div>
       </div>
@@ -60,14 +93,12 @@ const hasQRCode = computed(() => props.dataUrl && props.dataUrl.length > 0)
       <div class="mb-5 space-y-4">
         <!-- Size Selection -->
         <div>
-          <label for="size-select" class="block font-inter text-sm font-bold text-maroon-light mb-2">
-            Size
-          </label>
+          <label for="size-select" class="label-cipher">Size</label>
           <select
             id="size-select"
             :value="size"
             @change="emit('update:size', Number($event.target.value))"
-            class="w-full px-4 py-2.5 border-3 border-maroon rounded-lg focus:outline-3 focus:outline-btn-blue focus:outline-offset-2 transition-colors text-gray-900 bg-white cursor-pointer font-body text-sm"
+            class="input-cipher"
           >
             <option v-for="opt in sizeOptions" :key="opt.value" :value="opt.value">
               {{ opt.label }}
@@ -79,44 +110,46 @@ const hasQRCode = computed(() => props.dataUrl && props.dataUrl.length > 0)
         <div class="grid grid-cols-2 gap-3">
           <!-- Foreground Color -->
           <div>
-            <label for="fg-color" class="block font-inter text-sm font-bold text-maroon-light mb-2">
-              Foreground
-            </label>
+            <label for="fg-color" class="label-cipher">Foreground</label>
             <div class="flex items-center gap-2">
               <input
                 id="fg-color"
                 type="color"
                 :value="fgColor"
                 @input="emit('update:fgColor', $event.target.value)"
+                aria-label="Foreground color picker"
               />
               <input
+                id="fg-color-text"
                 type="text"
                 :value="fgColor"
                 @input="emit('update:fgColor', $event.target.value)"
                 maxlength="7"
-                class="flex-1 min-w-0 px-2 py-1.5 border-3 border-maroon rounded-lg text-xs font-mono text-gray-700 uppercase"
+                class="input-cipher flex-1 min-w-0 px-2 py-1.5 text-xs font-mono uppercase"
+                aria-label="Foreground color hex value"
               />
             </div>
           </div>
 
           <!-- Background Color -->
           <div>
-            <label for="bg-color" class="block font-inter text-sm font-bold text-maroon-light mb-2">
-              Background
-            </label>
+            <label for="bg-color" class="label-cipher">Background</label>
             <div class="flex items-center gap-2">
               <input
                 id="bg-color"
                 type="color"
                 :value="bgColor"
                 @input="emit('update:bgColor', $event.target.value)"
+                aria-label="Background color picker"
               />
               <input
+                id="bg-color-text"
                 type="text"
                 :value="bgColor"
                 @input="emit('update:bgColor', $event.target.value)"
                 maxlength="7"
-                class="flex-1 min-w-0 px-2 py-1.5 border-3 border-maroon rounded-lg text-xs font-mono text-gray-700 uppercase"
+                class="input-cipher flex-1 min-w-0 px-2 py-1.5 text-xs font-mono uppercase"
+                aria-label="Background color hex value"
               />
             </div>
           </div>
@@ -124,24 +157,22 @@ const hasQRCode = computed(() => props.dataUrl && props.dataUrl.length > 0)
       </div>
 
       <!-- Download Buttons -->
-      <div class="flex gap-3 max-sm:flex-col">
+      <div class="flex gap-4 max-sm:flex-col mt-auto">
         <button
           @click="emit('downloadPng')"
           :disabled="!hasQRCode"
-          class="btn-brutal flex-1 bg-btn-blue text-white inline-flex items-center justify-center gap-2 text-base"
-          style="text-shadow: -1px 1.5px 0 black"
+          class="cybr-btn flex-1"
         >
-          <i class="fa-solid fa-download"></i>
-          <span>PNG</span>
+          <span class="cybr-btn__content"><i class="fa-solid fa-download"></i> PNG</span>_
+          <span class="cybr-btn__glitch" aria-hidden>PNG_</span>
         </button>
         <button
           @click="emit('downloadSvg')"
           :disabled="!hasQRCode"
-          class="btn-brutal flex-1 bg-btn-green text-white inline-flex items-center justify-center gap-2 text-base"
-          style="text-shadow: -1px 1.5px 0 black"
+          class="cybr-btn secondary flex-1"
         >
-          <i class="fa-solid fa-download"></i>
-          <span>SVG</span>
+          <span class="cybr-btn__content"><i class="fa-solid fa-download"></i> SVG</span>_
+          <span class="cybr-btn__glitch" aria-hidden>SVG_</span>
         </button>
       </div>
     </div>
