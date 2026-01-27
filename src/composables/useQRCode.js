@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import QRCode from 'qrcode'
 
 export function useQRCode() {
