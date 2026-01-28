@@ -40,6 +40,65 @@ const lightningRef = ref(null)
 const invWrapperRef = ref(null)
 const invLogoRef = ref(null)
 const invTooltipRef = ref(null)
+const bmcWrapperRef = ref(null)
+const bmcLogoRef = ref(null)
+const bmcTooltipRef = ref(null)
+const audioWrapperRef = ref(null)
+const audioLogoRef = ref(null)
+const audioTooltipRef = ref(null)
+const isMuted = ref(true)
+
+// Glitch effect function for diamond buttons
+function triggerGlitch(target) {
+  if (!target) return
+
+  gsap.timeline()
+    .to(target, {
+      x: -3,
+      filter: 'hue-rotate(90deg) brightness(1.5)',
+      duration: 0.05,
+      ease: 'steps(1)'
+    })
+    .to(target, {
+      x: 3,
+      filter: 'hue-rotate(-90deg) brightness(0.8)',
+      duration: 0.05,
+      ease: 'steps(1)'
+    })
+    .to(target, {
+      x: -2,
+      y: 2,
+      filter: 'hue-rotate(180deg) brightness(1.2)',
+      duration: 0.03,
+      ease: 'steps(1)'
+    })
+    .to(target, {
+      x: 2,
+      y: -2,
+      filter: 'hue-rotate(0deg) brightness(1)',
+      duration: 0.05,
+      ease: 'steps(1)'
+    })
+    .to(target, {
+      x: 0,
+      y: 0,
+      filter: 'none',
+      duration: 0.03,
+      ease: 'steps(1)'
+    })
+}
+
+// Audio toggle function
+function toggleMute() {
+  if (window.bgAudio) {
+    if (isMuted.value) {
+      window.bgAudio.muted = false
+    } else {
+      window.bgAudio.muted = true
+    }
+    isMuted.value = !isMuted.value
+  }
+}
 
 // Invisionnaire logo hover animations
 function showInvTooltip() {
@@ -50,13 +109,17 @@ function showInvTooltip() {
 
   gsap.killTweensOf([invTooltipRef.value, logo, img])
 
+  // Trigger glitch effect
+  triggerGlitch(logo)
+
   // Rotate diamond to square (Z-axis rotation)
   gsap.to(logo, {
     rotationZ: 0,
     scale: 1.1,
     boxShadow: '0 0 25px rgba(245, 184, 0, 0.6)',
     duration: 0.4,
-    ease: 'power2.out'
+    ease: 'power2.out',
+    delay: 0.2
   })
 
   // Counter-rotate image to keep it upright
@@ -97,6 +160,132 @@ function hideInvTooltip() {
   })
 
   gsap.to(invTooltipRef.value, {
+    opacity: 0,
+    y: 5,
+    duration: 0.15,
+    ease: 'power2.in'
+  })
+}
+
+// Buy Me a Coffee logo hover animations
+function showBmcTooltip() {
+  if (!bmcTooltipRef.value || !bmcLogoRef.value) return
+
+  const logo = bmcLogoRef.value
+  const icon = logo.querySelector('i')
+
+  gsap.killTweensOf([bmcTooltipRef.value, logo, icon])
+
+  // Trigger glitch effect
+  triggerGlitch(logo)
+
+  gsap.to(logo, {
+    rotationZ: 0,
+    scale: 1.1,
+    boxShadow: '0 0 25px rgba(245, 184, 0, 0.6)',
+    duration: 0.4,
+    ease: 'power2.out',
+    delay: 0.2
+  })
+
+  gsap.to(icon, {
+    rotationZ: 0,
+    duration: 0.4,
+    ease: 'power2.out'
+  })
+
+  gsap.fromTo(bmcTooltipRef.value,
+    { opacity: 0, y: 10, scale: 0.9 },
+    { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: 'back.out(1.7)' }
+  )
+}
+
+function hideBmcTooltip() {
+  if (!bmcTooltipRef.value || !bmcLogoRef.value) return
+
+  const logo = bmcLogoRef.value
+  const icon = logo.querySelector('i')
+
+  gsap.killTweensOf([bmcTooltipRef.value, logo, icon])
+
+  gsap.to(logo, {
+    rotationZ: 45,
+    scale: 1,
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+    duration: 0.4,
+    ease: 'power2.in'
+  })
+
+  gsap.to(icon, {
+    rotationZ: -45,
+    duration: 0.4,
+    ease: 'power2.in'
+  })
+
+  gsap.to(bmcTooltipRef.value, {
+    opacity: 0,
+    y: 5,
+    duration: 0.15,
+    ease: 'power2.in'
+  })
+}
+
+// Audio button hover animations
+function showAudioTooltip() {
+  if (!audioTooltipRef.value || !audioLogoRef.value) return
+
+  const logo = audioLogoRef.value
+  const icon = logo.querySelector('i')
+
+  gsap.killTweensOf([audioTooltipRef.value, logo, icon])
+
+  // Trigger glitch effect
+  triggerGlitch(logo)
+
+  gsap.to(logo, {
+    rotationZ: 0,
+    scale: 1.1,
+    boxShadow: '0 0 25px rgba(245, 184, 0, 0.6)',
+    duration: 0.4,
+    ease: 'power2.out',
+    delay: 0.2
+  })
+
+  gsap.to(icon, {
+    rotationZ: 0,
+    duration: 0.4,
+    ease: 'power2.out'
+  })
+
+  gsap.fromTo(audioTooltipRef.value,
+    { opacity: 0, y: 10, scale: 0.9 },
+    { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: 'back.out(1.7)' }
+  )
+}
+
+function hideAudioTooltip() {
+  if (!audioTooltipRef.value || !audioLogoRef.value) return
+
+  const logo = audioLogoRef.value
+  const icon = logo.querySelector('i')
+
+  gsap.killTweensOf([audioTooltipRef.value, logo, icon])
+
+  gsap.to(logo, {
+    rotationZ: 45,
+    scale: 1,
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+    duration: 0.4,
+    ease: 'power2.in'
+  })
+
+  gsap.to(icon, {
+    rotationZ: -45,
+    duration: 0.4,
+    ease: 'power2.in'
+  })
+
+  gsap.to(audioTooltipRef.value, {
     opacity: 0,
     y: 5,
     duration: 0.15,
@@ -223,8 +412,8 @@ onMounted(() => {
     const playChaser = () => {
       const chaserTl = gsap.timeline({
         onComplete: () => {
-          // Random delay between 2-6 seconds before next play
-          const randomDelay = 2 + Math.random() * 4
+          // Random delay between 5-20 seconds before next play
+          const randomDelay = 5 + Math.random() * 15
           gsap.delayedCall(randomDelay, playChaser)
         }
       })
@@ -269,8 +458,8 @@ onMounted(() => {
       })
     }
 
-    // Start the first animation after a short delay
-    gsap.delayedCall(1, playChaser)
+    // Start the first animation after a random delay (5-20 seconds)
+    gsap.delayedCall(5 + Math.random() * 15, playChaser)
   }
 
   // Lightning effect - random flashes at random intervals
@@ -334,6 +523,89 @@ onMounted(() => {
 
     // Start first lightning after random delay (3-8 seconds)
     gsap.delayedCall(3 + Math.random() * 5, triggerLightning)
+  }
+
+  // Audio button idle animation - gentle bobbing (synced with others)
+  if (audioWrapperRef.value) {
+    gsap.to(audioWrapperRef.value, {
+      y: -8,
+      duration: 1.5,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1
+    })
+  }
+
+  // Buy Me a Coffee logo idle animation - gentle bobbing + particles (synced with Invisionnaire)
+  if (bmcWrapperRef.value) {
+    gsap.to(bmcWrapperRef.value, {
+      y: -8,
+      duration: 1.5,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1
+      // No delay - sync with Invisionnaire so they move together
+    })
+
+    // Create floating particles - white squares bursting from center
+    const particlesContainer = bmcWrapperRef.value.querySelector('.bmc-particles')
+    if (particlesContainer) {
+      const particleCount = 8
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('span')
+        particle.className = 'bmc-particle'
+        particlesContainer.appendChild(particle)
+
+        // Random size for each particle (4px to 10px)
+        const size = 4 + Math.random() * 6
+        particle.style.width = size + 'px'
+        particle.style.height = size + 'px'
+
+        // Animation function for this particle
+        const animateParticle = () => {
+          // Random angle for outward direction
+          const angle = Math.random() * Math.PI * 2
+          const distance = 40 + Math.random() * 50
+          const endX = Math.cos(angle) * distance
+          const endY = Math.sin(angle) * distance
+
+          // Random lifetime (1.5 to 3.5 seconds)
+          const duration = 1.5 + Math.random() * 2
+
+          // Start from center
+          gsap.set(particle, {
+            x: 0,
+            y: 0,
+            scale: 0.5 + Math.random() * 1,
+            opacity: 0
+          })
+
+          gsap.timeline({
+            onComplete: () => {
+              // Random delay before next burst (0.5 to 2 seconds)
+              gsap.delayedCall(0.5 + Math.random() * 1.5, animateParticle)
+            }
+          })
+            .to(particle, {
+              opacity: 1,
+              duration: 0.2,
+              ease: 'power1.in'
+            })
+            .to(particle, {
+              x: endX,
+              y: endY,
+              scale: 0.2,
+              opacity: 0,
+              duration: duration,
+              ease: 'power2.out'
+            }, '<0.1')
+        }
+
+        // Stagger the initial start (offset from Invisionnaire particles)
+        gsap.delayedCall(i * 0.3 + 0.5, animateParticle)
+      }
+    }
   }
 
   // Invisionnaire logo idle animation - gentle bobbing + particles
@@ -406,7 +678,8 @@ onMounted(() => {
       }
     }
   }
-})
+
+  })
 
 onUnmounted(() => clearTimeout(debounceTimer))
 </script>
@@ -423,10 +696,7 @@ onUnmounted(() => clearTimeout(debounceTimer))
   <div class="min-h-screen px-5 pt-10 pb-5 flex flex-col items-center max-md:px-4 max-sm:px-3">
     <!-- Header -->
     <header ref="headerRef" class="text-center mb-10 w-full flex flex-col items-center justify-center">
-      <p ref="neonLabelRef" class="section-label mb-4">QR Generator</p>
-      <h1 class="title-display text-2xl md:text-3xl lg:text-4xl text-gold m-0 mb-4 whitespace-nowrap text-center">
-        NO LIMITS, ONLY QR CODES.
-      </h1>
+      <h1 ref="neonLabelRef" class="header-h1 mb-4">QR Generator</h1>
       <p class="header-subtitle font-display text-xs md:text-sm text-white m-0 whitespace-nowrap uppercase font-medium tracking-wider text-center">
         Generate QR codes instantly in your browser. 100% private, no uploads, completely free.
       </p>
@@ -660,6 +930,45 @@ onUnmounted(() => clearTimeout(debounceTimer))
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- Audio Toggle - Fixed Bottom Right (above BMC) -->
+  <div
+    ref="audioWrapperRef"
+    class="audio-logo-wrapper"
+    @mouseenter="showAudioTooltip"
+    @mouseleave="hideAudioTooltip"
+  >
+    <span ref="audioTooltipRef" class="audio-tooltip">{{ isMuted ? 'Unmute' : 'Mute' }}</span>
+    <button
+      ref="audioLogoRef"
+      @click="toggleMute"
+      class="audio-logo-fixed"
+      :aria-label="isMuted ? 'Unmute audio' : 'Mute audio'"
+    >
+      <i :class="isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high'"></i>
+    </button>
+  </div>
+
+  <!-- Buy Me a Coffee - Fixed Bottom Right (above Invisionnaire) -->
+  <div
+    ref="bmcWrapperRef"
+    class="bmc-logo-wrapper"
+    @mouseenter="showBmcTooltip"
+    @mouseleave="hideBmcTooltip"
+  >
+    <div class="bmc-particles" aria-hidden="true"></div>
+    <span ref="bmcTooltipRef" class="bmc-tooltip">Buy me a coffee</span>
+    <a
+      ref="bmcLogoRef"
+      href="https://buymeacoffee.com/Adrianrosariopr"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="bmc-logo-fixed"
+      aria-label="Buy me a coffee"
+    >
+      <i class="fa-solid fa-mug-hot"></i>
+    </a>
   </div>
 
   <!-- Invisionnaire Logo - Fixed Bottom Right -->

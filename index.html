@@ -64,5 +64,21 @@
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
+
+    <!-- Background Audio - Local Loop -->
+    <audio id="bg-audio" loop preload="auto" muted style="display: none;">
+      <source src="/Sound/loop.wav" type="audio/wav">
+    </audio>
+    <script>
+      (function() {
+        const audio = document.getElementById('bg-audio');
+        window.bgAudio = audio;
+        audio.volume = 0.5;
+        audio.muted = true;
+
+        // Start playing (muted) so it's ready when user unmutes
+        audio.play().catch(() => {});
+      })();
+    </script>
   </body>
 </html>

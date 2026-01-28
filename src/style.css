@@ -142,7 +142,7 @@ body {
   box-shadow: 0 0 10px rgba(245, 184, 0, 0.5);
 }
 
-/* Section label - neon light chaser effect */
+/* Section label - neon light chaser effect (legacy, kept for reference) */
 .section-label {
   font-family: var(--font-display);
   font-size: 1.1rem;
@@ -163,6 +163,40 @@ body {
 
 /* SplitText character styling - ensure inline-block for animations */
 .section-label div {
+  display: inline-block;
+  will-change: transform, text-shadow, color;
+}
+
+/* Header H1 - Main title with neon animation */
+.header-h1 {
+  font-family: 'Mechsuit', var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+  display: inline-block;
+  position: relative;
+  text-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+@media (min-width: 768px) {
+  .header-h1 {
+    font-size: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-h1 {
+    font-size: 4.5rem;
+  }
+}
+
+/* SplitText character styling for H1 */
+.header-h1 div {
   display: inline-block;
   will-change: transform, text-shadow, color;
 }
@@ -794,6 +828,142 @@ h3,
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
+}
+
+/* Audio Toggle - Fixed Bottom Right (above BMC) */
+.audio-logo-wrapper {
+  position: fixed;
+  bottom: 14.5rem;
+  right: 1.5rem;
+  z-index: 100;
+}
+
+.audio-logo-fixed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #f5b800 0%, #d4a000 50%, #b8860b 100%);
+  border: 2px solid var(--color-gold);
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transform: rotateZ(45deg);
+  cursor: pointer;
+}
+
+.audio-logo-fixed i {
+  font-size: 1.5rem;
+  color: var(--color-cyber-bg);
+  transform: rotateZ(-45deg);
+}
+
+.audio-tooltip {
+  position: absolute;
+  bottom: calc(100% + 0.75rem);
+  right: 0;
+  background: linear-gradient(135deg, #f5b800 0%, #d4a000 100%);
+  color: #0a0a0a;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  corner-shape: bevel;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.audio-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 1rem;
+  border: 6px solid transparent;
+  border-top-color: #d4a000;
+}
+
+/* Buy Me a Coffee - Fixed Bottom Right (above Invisionnaire) */
+/* Diamond diagonal = 56px * 1.414 ≈ 79px. Inv at 1.5rem (24px), need ~100px gap */
+/* 24px + 79px (inv diagonal) + 16px gap = 119px ≈ 7.5rem from bottom */
+.bmc-logo-wrapper {
+  position: fixed;
+  bottom: 8rem;
+  right: 1.5rem;
+  z-index: 100;
+}
+
+.bmc-logo-fixed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #f5b800 0%, #d4a000 50%, #b8860b 100%);
+  border: 2px solid var(--color-gold);
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transform: rotateZ(45deg);
+  text-decoration: none;
+}
+
+.bmc-logo-fixed i {
+  font-size: 1.5rem;
+  color: var(--color-cyber-bg);
+  transform: rotateZ(-45deg);
+}
+
+.bmc-tooltip {
+  position: absolute;
+  bottom: calc(100% + 0.75rem);
+  right: 0;
+  background: linear-gradient(135deg, #f5b800 0%, #d4a000 100%);
+  color: #0a0a0a;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  corner-shape: bevel;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.bmc-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 1rem;
+  border: 6px solid transparent;
+  border-top-color: #d4a000;
+}
+
+/* Floating particles around BMC logo */
+.bmc-particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.bmc-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  box-shadow: 0 0 6px #ffffff, 0 0 12px rgba(255, 255, 255, 0.5);
 }
 
 /* Invisionnaire Logo - Fixed Bottom Right */
