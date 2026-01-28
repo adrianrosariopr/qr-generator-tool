@@ -170,17 +170,24 @@ body {
 /* Header H1 - Main title with neon animation */
 .header-h1 {
   font-family: 'Mechsuit', var(--font-display);
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 400;
   color: var(--color-gold);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   margin: 0;
   display: inline-block;
   position: relative;
   text-shadow:
     0 4px 12px rgba(0, 0, 0, 0.8),
     0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+@media (min-width: 480px) {
+  .header-h1 {
+    font-size: 2.5rem;
+    letter-spacing: 0.1em;
+  }
 }
 
 @media (min-width: 768px) {
@@ -266,8 +273,9 @@ body {
 .type-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem;
   border: 1px solid var(--color-cyber-border);
   background: transparent;
   color: var(--color-text-secondary);
@@ -278,6 +286,15 @@ body {
   letter-spacing: 0.05em;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .type-btn {
+    padding: 0.5rem 0.75rem;
+    min-width: auto;
+  }
 }
 
 .type-btn:hover {
@@ -289,6 +306,20 @@ body {
   border-color: var(--color-gold);
   background: var(--color-gold);
   color: var(--color-cyber-bg);
+}
+
+.type-btn-label {
+  display: inline;
+}
+
+.type-btn-label.hide-on-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .type-btn-label.hide-on-mobile {
+    display: inline;
+  }
 }
 
 .type-btn-icon {
@@ -500,6 +531,52 @@ input[type="color"]::-moz-color-swatch {
 :focus-visible {
   outline: 1px solid var(--color-gold);
   outline-offset: 2px;
+}
+
+/* Mobile Action Bar */
+.mobile-action-bar {
+  padding-bottom: 1rem;
+}
+
+.mobile-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #f5b800 0%, #d4a000 50%, #b8860b 100%);
+  border: 2px solid var(--color-gold);
+  border-radius: 4px;
+  color: var(--color-cyber-bg);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  transform: rotate(45deg);
+}
+
+.mobile-action-btn i,
+.mobile-action-btn img {
+  transform: rotate(-45deg);
+}
+
+.mobile-action-btn:active {
+  transform: rotate(45deg) scale(0.95);
+}
+
+/* Form switch transition */
+.form-switch-enter-active,
+.form-switch-leave-active {
+  transition: all 0.2s ease;
+}
+
+.form-switch-enter-from {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.form-switch-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
 }
 
 /* Reduce motion */
@@ -833,8 +910,8 @@ h3,
 /* Audio Toggle - Fixed Bottom Right (above BMC) */
 .audio-logo-wrapper {
   position: fixed;
-  bottom: 14.5rem;
-  right: 1.5rem;
+  bottom: 10rem;
+  right: 1rem;
   z-index: 100;
 }
 
@@ -842,8 +919,8 @@ h3,
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   background: linear-gradient(135deg, #f5b800 0%, #d4a000 50%, #b8860b 100%);
   border: 2px solid var(--color-gold);
   border-radius: 4px;
@@ -854,12 +931,29 @@ h3,
 }
 
 .audio-logo-fixed i {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: var(--color-cyber-bg);
   transform: rotateZ(-45deg);
 }
 
+@media (min-width: 768px) {
+  .audio-logo-wrapper {
+    bottom: 14.5rem;
+    right: 1.5rem;
+  }
+
+  .audio-logo-fixed {
+    width: 56px;
+    height: 56px;
+  }
+
+  .audio-logo-fixed i {
+    font-size: 1.5rem;
+  }
+}
+
 .audio-tooltip {
+  display: none;
   position: absolute;
   bottom: calc(100% + 0.75rem);
   right: 0;
@@ -877,6 +971,12 @@ h3,
   opacity: 0;
   pointer-events: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+  .audio-tooltip {
+    display: block;
+  }
 }
 
 .audio-tooltip::after {
@@ -889,12 +989,10 @@ h3,
 }
 
 /* Buy Me a Coffee - Fixed Bottom Right (above Invisionnaire) */
-/* Diamond diagonal = 56px * 1.414 ≈ 79px. Inv at 1.5rem (24px), need ~100px gap */
-/* 24px + 79px (inv diagonal) + 16px gap = 119px ≈ 7.5rem from bottom */
 .bmc-logo-wrapper {
   position: fixed;
-  bottom: 8rem;
-  right: 1.5rem;
+  bottom: 5.5rem;
+  right: 1rem;
   z-index: 100;
 }
 
@@ -902,8 +1000,8 @@ h3,
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   background: linear-gradient(135deg, #f5b800 0%, #d4a000 50%, #b8860b 100%);
   border: 2px solid var(--color-gold);
   border-radius: 4px;
@@ -914,12 +1012,29 @@ h3,
 }
 
 .bmc-logo-fixed i {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: var(--color-cyber-bg);
   transform: rotateZ(-45deg);
 }
 
+@media (min-width: 768px) {
+  .bmc-logo-wrapper {
+    bottom: 8rem;
+    right: 1.5rem;
+  }
+
+  .bmc-logo-fixed {
+    width: 56px;
+    height: 56px;
+  }
+
+  .bmc-logo-fixed i {
+    font-size: 1.5rem;
+  }
+}
+
 .bmc-tooltip {
+  display: none;
   position: absolute;
   bottom: calc(100% + 0.75rem);
   right: 0;
@@ -937,6 +1052,12 @@ h3,
   opacity: 0;
   pointer-events: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+  .bmc-tooltip {
+    display: block;
+  }
 }
 
 .bmc-tooltip::after {
@@ -970,8 +1091,8 @@ h3,
 /* Wrapper handles fixed positioning and bobbing animation */
 .inv-logo-wrapper {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
+  bottom: 1rem;
+  right: 1rem;
   z-index: 100;
 }
 
@@ -980,8 +1101,8 @@ h3,
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   background: linear-gradient(135deg, #f5b800 0%, #d4a000 50%, #b8860b 100%);
   border: 2px solid var(--color-gold);
   border-radius: 4px;
@@ -990,16 +1111,36 @@ h3,
   transform: rotateZ(45deg);
 }
 
+@media (min-width: 768px) {
+  .inv-logo-wrapper {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .inv-logo-fixed {
+    width: 56px;
+    height: 56px;
+  }
+}
+
 .inv-logo-fixed img {
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   image-rendering: pixelated;
   transform: rotateZ(-45deg);
 }
 
+@media (min-width: 768px) {
+  .inv-logo-fixed img {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 /* Tooltip for logo - positioned relative to wrapper, outside the flipping elements */
 .inv-tooltip {
+  display: none;
   position: absolute;
   bottom: calc(100% + 0.75rem);
   right: 0;
@@ -1017,6 +1158,12 @@ h3,
   opacity: 0;
   pointer-events: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+  .inv-tooltip {
+    display: block;
+  }
 }
 
 .inv-tooltip::after {

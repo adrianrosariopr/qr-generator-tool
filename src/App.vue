@@ -697,7 +697,7 @@ onUnmounted(() => clearTimeout(debounceTimer))
     <!-- Header -->
     <header ref="headerRef" class="text-center mb-10 w-full flex flex-col items-center justify-center">
       <h1 ref="neonLabelRef" class="header-h1 mb-4">QR Generator</h1>
-      <p class="header-subtitle font-display text-xs md:text-sm text-white m-0 whitespace-nowrap uppercase font-medium tracking-wider text-center">
+      <p class="header-subtitle font-display text-xs md:text-sm text-white m-0 uppercase font-medium tracking-wider text-center max-w-md mx-auto">
         Generate QR codes instantly in your browser. 100% private, no uploads, completely free.
       </p>
     </header>
@@ -721,10 +721,11 @@ onUnmounted(() => clearTimeout(debounceTimer))
                   :key="type.id"
                   @click="selectedType = type.id"
                   :aria-pressed="selectedType === type.id"
+                  :title="type.label"
                   :class="['type-btn', selectedType === type.id ? 'active' : '']"
                 >
                   <i :class="type.icon" aria-hidden="true"></i>
-                  {{ type.label }}
+                  <span :class="['type-btn-label', selectedType === type.id ? '' : 'hide-on-mobile']">{{ type.label }}</span>
                 </button>
               </div>
 
@@ -748,7 +749,8 @@ onUnmounted(() => clearTimeout(debounceTimer))
             </div>
 
             <!-- Dynamic Forms -->
-            <div class="space-y-4">
+            <Transition name="form-switch" mode="out-in">
+              <div :key="selectedType" class="space-y-4">
               <!-- URL Form -->
               <div v-if="selectedType === 'url'">
                 <label for="input-url" class="label-cipher">URL</label>
@@ -909,7 +911,8 @@ onUnmounted(() => clearTimeout(debounceTimer))
                 <input id="input-image" type="url" v-model="formData.image" placeholder="https://example.com/image.png" class="input-cipher" autocomplete="url" />
                 <p class="helper-text">Link to a hosted image file</p>
               </div>
-            </div>
+              </div>
+            </Transition>
           </div>
         </div>
 
@@ -929,13 +932,42 @@ onUnmounted(() => clearTimeout(debounceTimer))
           />
         </div>
       </div>
+
+      <!-- Mobile Action Bar - Only visible on small screens -->
+      <div class="mobile-action-bar md:hidden mt-6 flex justify-center gap-8">
+        <button
+          @click="toggleMute"
+          class="mobile-action-btn"
+          :aria-label="isMuted ? 'Unmute audio' : 'Mute audio'"
+        >
+          <i :class="isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high'"></i>
+        </button>
+        <a
+          href="https://buymeacoffee.com/Adrianrosariopr"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mobile-action-btn"
+          aria-label="Buy me a coffee"
+        >
+          <i class="fa-solid fa-mug-hot"></i>
+        </a>
+        <a
+          href="https://invisionnaire.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mobile-action-btn"
+          aria-label="Visit Invisionnaire"
+        >
+          <img src="/inv-logo-pixel.png" alt="" class="w-6 h-6 object-contain" />
+        </a>
+      </div>
     </main>
   </div>
 
-  <!-- Audio Toggle - Fixed Bottom Right (above BMC) -->
+  <!-- Audio Toggle - Fixed Bottom Right (above BMC) - Desktop only -->
   <div
     ref="audioWrapperRef"
-    class="audio-logo-wrapper"
+    class="audio-logo-wrapper hidden md:block"
     @mouseenter="showAudioTooltip"
     @mouseleave="hideAudioTooltip"
   >
@@ -950,10 +982,10 @@ onUnmounted(() => clearTimeout(debounceTimer))
     </button>
   </div>
 
-  <!-- Buy Me a Coffee - Fixed Bottom Right (above Invisionnaire) -->
+  <!-- Buy Me a Coffee - Fixed Bottom Right (above Invisionnaire) - Desktop only -->
   <div
     ref="bmcWrapperRef"
-    class="bmc-logo-wrapper"
+    class="bmc-logo-wrapper hidden md:block"
     @mouseenter="showBmcTooltip"
     @mouseleave="hideBmcTooltip"
   >
@@ -971,11 +1003,11 @@ onUnmounted(() => clearTimeout(debounceTimer))
     </a>
   </div>
 
-  <!-- Invisionnaire Logo - Fixed Bottom Right -->
+  <!-- Invisionnaire Logo - Fixed Bottom Right - Desktop only -->
   <!-- Wrapper handles positioning and bobbing; tooltip is sibling to logo so it won't flip -->
   <div
     ref="invWrapperRef"
-    class="inv-logo-wrapper"
+    class="inv-logo-wrapper hidden md:block"
     @mouseenter="showInvTooltip"
     @mouseleave="hideInvTooltip"
   >
